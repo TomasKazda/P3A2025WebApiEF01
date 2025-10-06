@@ -11,7 +11,7 @@ namespace P3A2025WebApiEF01.Models
         public string Name { get; set; } = null!;
 
         public int? CatId { get; set; }
-        [ForeignKey(nameof(Ingredients.CatId))]
+        [ForeignKey(nameof(CatId))]
         public Category? Category { get; set; }
     }
 }

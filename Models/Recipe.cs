@@ -10,5 +10,6 @@ namespace P3A2025WebApiEF01.Models
         public int RecipeId { get; set; }
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
+        public ICollection<Component>? Components { get; set; } = new List<Component>();
     }
 }

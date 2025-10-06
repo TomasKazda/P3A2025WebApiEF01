@@ -1,0 +1,6 @@
+@P3A2025WebApiEF01_HostAddress = http://localhost:5166
+
+GET {{P3A2025WebApiEF01_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

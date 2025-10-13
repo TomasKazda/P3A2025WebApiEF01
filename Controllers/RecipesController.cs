@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using P3A2025WebApiEF01.Data;
+using P3A2025WebApiEF01.Models;
 
 namespace P3A2025WebApiEF01.Controllers
 {
@@ -7,17 +9,34 @@ namespace P3A2025WebApiEF01.Controllers
     public class RecipesController : ControllerBase
     {
         private readonly ILogger<RecipesController> _logger;
+        private readonly RecipeDbContext _dbc;
 
-        public RecipesController(ILogger<RecipesController> logger)
+        public RecipesController(ILogger<RecipesController> logger, RecipeDbContext dbc)
         {
             _logger = logger;
+            _dbc = dbc;
+
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Recipe> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => index.ToString())
-            .ToArray();
+            return _dbc.Recipes.AsEnumerable();
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Recipe> GetOne(int id)
+        {
+            var result = _dbc.Recipes.Find(id);
+            return (result is null) ? NotFound() : Ok(result);
+        }
+
+        [HttpPost]
+        public ActionResult<Recipe> InsertOne([FromBody] Recipe newRp)
+        {
+            _dbc.Recipes.Add(newRp);
+            _dbc.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created, newRp);
         }
     }
 }

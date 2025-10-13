@@ -9,7 +9,7 @@ namespace P3A2025WebApiEF01.Models
     public class Component
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CLnk { get; set; }
         
         public int RecipeId { get; set; }

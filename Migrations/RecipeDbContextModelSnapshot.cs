@@ -61,6 +61,7 @@ namespace P3A2025WebApiEF01.Migrations
             modelBuilder.Entity("P3A2025WebApiEF01.Models.Component", b =>
                 {
                     b.Property<int>("CLnk")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("IngredientId")

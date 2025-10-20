@@ -10,7 +10,7 @@ using P3A2025WebApiEF01.Data;
 namespace P3A2025WebApiEF01.Migrations
 {
     [DbContext(typeof(RecipeDbContext))]
-    [Migration("20251006141509_m01init")]
+    [Migration("20251020103822_m01init")]
     partial class m01init
     {
         /// <inheritdoc />
@@ -64,6 +64,7 @@ namespace P3A2025WebApiEF01.Migrations
             modelBuilder.Entity("P3A2025WebApiEF01.Models.Component", b =>
                 {
                     b.Property<int>("CLnk")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("IngredientId")

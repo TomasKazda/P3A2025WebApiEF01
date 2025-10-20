@@ -62,7 +62,8 @@ namespace P3A2025WebApiEF01.Migrations
                 name: "Components",
                 columns: table => new
                 {
-                    CLnk = table.Column<int>(type: "INTEGER", nullable: false),
+                    CLnk = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     RecipeId = table.Column<int>(type: "INTEGER", nullable: false),
                     IngredientId = table.Column<int>(type: "INTEGER", nullable: false),
                     Quantity = table.Column<decimal>(type: "TEXT", nullable: true),

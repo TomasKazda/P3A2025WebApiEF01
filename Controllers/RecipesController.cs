@@ -42,29 +42,85 @@ namespace P3A2025WebApiEF01.Controllers
         }
 
         [HttpPut("{id}")]
-        public ActionResult UpdateOne(int id, [FromBody] Recipe newRp) {
-            //var A
-            //Recipe? newDataR = _dbc.Recipes.Find(id);
+        public ActionResult<Recipe> UpdateOne(int id, [FromBody] Recipe newRp) {
+            //var A - implementace èásteèného update reflexí
+            _logger.LogInformation($"Updating {id}", newRp);
+            Recipe? newDataR = _dbc.Recipes.Find(id);
 
-            //if (newDataR == null)
-            //{
-            //    return BadRequest();
-            //}
-            //newDataR.Title = newRp.Title;
-            //newDataR.Description = newRp.Description;
-            //_dbc.SaveChanges();
+            if (newDataR == null)
+            {
+                return BadRequest();
+            }
 
-            //var B
+            updateNonEmptyProperties(source: newRp, target: newDataR);
+
+            _dbc.SaveChanges();
+
+            //var B (jednoduché, bez kontroly)
+            //_logger.LogInformation($"Updating {id}", newRp);
             //newRp.RecipeId = id;
             //_dbc.Entry<Recipe>(newRp);
             //_dbc.Entry(newRp).State = EntityState.Modified;
             //_dbc.SaveChanges();
 
-            //var C
-            _dbc.Recipes.Update(newRp);
+            //var C (komplexnìjší, s kontrolou existence id (UPDATE / INSERT))
+            //newRp.RecipeId = id;
+            //_dbc.Recipes.Update(newRp);
+            //_dbc.SaveChanges();
+
+            return StatusCode(StatusCodes.Status204NoContent, newDataR);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<Recipe> DeleteRecipe(int id)
+        {
+            var recipe = _dbc.Recipes.FirstOrDefault((r) => r.RecipeId == id);
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            _dbc.Recipes.Remove(recipe);
             _dbc.SaveChanges();
 
-            return NoContent();
+            return StatusCode(StatusCodes.Status204NoContent, recipe);
+        }
+
+        private void updateNonEmptyProperties<T>(T target, T source)
+        {
+            var properties = typeof(T)
+                .GetProperties()
+                .Where(p => p.CanRead && p.CanWrite)
+                .Where(p => !isNavigationOrCollectionProperty(p.PropertyType));
+
+            foreach (var prop in properties)
+            {
+                var value = prop.GetValue(source);
+
+                if (isValueSet(value, prop.PropertyType))
+                {
+                    prop.SetValue(target, value);
+                }
+            }
+        }
+        private bool isNavigationOrCollectionProperty(Type type)
+        {
+            if (type == typeof(string)) return false;
+
+            if (typeof(System.Collections.IEnumerable).IsAssignableFrom(type)) return true;
+
+            return false;
+        }
+        private bool isValueSet(object? value, Type type)
+        {
+            if (value == null) return false;
+
+            if (type == typeof(string))
+            {
+                return !string.IsNullOrEmpty((string)value);
+            }
+
+            return !value.Equals(Activator.CreateInstance(type));
         }
     }
 }
